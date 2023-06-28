@@ -1,0 +1,270 @@
+#!/bin/bash
+set -eu
+
+print_usage() {
+  cat <<EOF
+usage: ${0##*/} [<option(s)>]
+chdir with recursive directory searching.
+
+options:
+  -f, --filter=COMMAND  use COMMAND to select a directory (default: CDR_FILTER)
+  -g, --git             enable searching from Git managed directoies
+  -G, --no-git          disable searching from Git managed directoies
+  -w, --wrapper=SHELL   output the wrapper script for SHELL and exit
+      --help            print usage and exit
+
+supported-shells:
+  bash
+
+environment-variables:
+  CDR_FILTER  set default -f/--filter (default: percol)
+  CDR_GIT     set default -g/--git (default: false)
+EOF
+}
+
+print_wrapper_script() {
+  shell=$1
+  case $shell in
+    bash)
+      cat <<EOF
+cdr() {
+  # dst:argparse:start
+  local filter_command=\${CDR_FILTER-percol}
+  local search_from_git=\${CDR_GIT-false}
+  local wrapper_target_shell=
+  while [[ \$# -ge 1 ]]; do
+    case \$1 in
+      -f*|--filter|--filter=*)
+        case \$1 in
+          -f|--filter)
+            if [[ \$# -lt 2 ]]; then
+              printf "%s\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
+              return 1
+            fi
+            filter_command=\$2
+            shift
+            ;;
+          -f*)
+            filter_command=\${1#-f}
+            ;;
+          --filter=*)
+            filter_command=\${1#--filter=}
+            ;;
+        esac
+        ;;
+      -g*|--git)
+        case \$1 in
+          -g|--git)
+            search_from_git=true
+            ;;
+          -g*)
+            search_from_git=true
+            next=-\${1#-g}
+            shift
+            set -- "\$next" "\$@"
+            continue
+            ;;
+        esac
+        ;;
+      -G*|--no-git)
+        case \$1 in
+          -G|--no-git)
+            search_from_git=false
+            ;;
+          -G*)
+            search_from_git=false
+            next=-\${1#-G}
+            shift
+            set -- "\$next" "\$@"
+            continue
+            ;;
+        esac
+        ;;
+      -w*|--wrapper|--wrapper=*)
+        case \$1 in
+          -w|--wrapper)
+            if [[ \$# -lt 2 ]]; then
+              printf "%s\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
+              return 1
+            fi
+            wrapper_target_shell=\$2
+            shift
+            ;;
+          -w*)
+            wrapper_target_shell=\${1#-w}
+            ;;
+          --wrapper=*)
+            wrapper_target_shell=\${1#--wrapper=}
+            ;;
+        esac
+        case \$wrapper_target_shell in
+          bash)
+            ;;
+          *)
+            printf "%s\n" "\${0##*/}: unsupported shell '\$wrapper_target_shell'" >&2
+            return 1
+            ;;
+        esac
+        ;;
+      --help)
+        command cdr --help
+        return 0
+        ;;
+      --)
+        shift
+        break
+        ;;
+      -*)
+        printf "%s\n" "\${0##*/}: unrecognized option '\$1'" >&2
+        return 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+    shift
+  done
+  if [[ -n \$wrapper_target_shell ]]; then
+    command cdr --wrapper "\$wrapper_target_shell"
+    return 0
+  fi
+  # dst:argparse:end
+
+  local source_listing_command
+  local use_git=false
+  if [[ \$search_from_git = true && \$(git rev-parse --is-inside-work-tree 2>&1) = true ]]; then
+    use_git=true
+    source_listing_command='cd "\$(git rev-parse --show-toplevel)"; echo .; git ls-tree -rt --format='"'"'%(objecttype) %(path)'"'"' HEAD | sed -ne '"'"'/^tree/{s/^tree //;p}'"'"''
+  else
+    source_listing_command='find -type d'
+  fi
+
+  local directory=\$(bash -c "\$source_listing_command" | bash -c "\$filter_command")
+  if [[ -z \$directory ]]; then
+    return 1
+  fi
+
+  if [[ \$use_git = true ]]; then
+    cd "\$(git rev-parse --show-toplevel)/\$directory"
+  else
+    cd "\$directory"
+  fi
+}
+EOF
+      ;;
+    *)
+      printf "%s\n" "${0##*/}: unsupported shell '$wrapper_target_shell'" >&2
+      exit 1
+      ;;
+  esac
+}
+
+# src:argparse:start
+filter_command=${CDR_FILTER-percol}
+search_from_git=${CDR_GIT-false}
+wrapper_target_shell=
+while [[ $# -ge 1 ]]; do
+  case $1 in
+    -f*|--filter|--filter=*)
+      case $1 in
+        -f|--filter)
+          if [[ $# -lt 2 ]]; then
+            printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
+            exit 1
+          fi
+          filter_command=$2
+          shift
+          ;;
+        -f*)
+          filter_command=${1#-f}
+          ;;
+        --filter=*)
+          filter_command=${1#--filter=}
+          ;;
+      esac
+      ;;
+    -g*|--git)
+      case $1 in
+        -g|--git)
+          search_from_git=true
+          ;;
+        -g*)
+          search_from_git=true
+          next=-${1#-g}
+          shift
+          set -- "$next" "$@"
+          continue
+          ;;
+      esac
+      ;;
+    -G*|--no-git)
+      case $1 in
+        -G|--no-git)
+          search_from_git=false
+          ;;
+        -G*)
+          search_from_git=false
+          next=-${1#-G}
+          shift
+          set -- "$next" "$@"
+          continue
+          ;;
+      esac
+      ;;
+    -w*|--wrapper|--wrapper=*)
+      case $1 in
+        -w|--wrapper)
+          if [[ $# -lt 2 ]]; then
+            printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
+            exit 1
+          fi
+          wrapper_target_shell=$2
+          shift
+          ;;
+        -w*)
+          wrapper_target_shell=${1#-w}
+          ;;
+        --wrapper=*)
+          wrapper_target_shell=${1#--wrapper=}
+          ;;
+      esac
+      case $wrapper_target_shell in
+        bash)
+          ;;
+        *)
+          printf "%s\n" "${0##*/}: unsupported shell '$wrapper_target_shell'" >&2
+          exit 1
+          ;;
+      esac
+      ;;
+    --help)
+      print_usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      printf "%s\n" "${0##*/}: unrecognized option '$1'" >&2
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift
+done
+if [[ -n $wrapper_target_shell ]]; then
+  print_wrapper_script "$wrapper_target_shell"
+  exit 0
+fi
+# src:argparse:end
+
+cat <<EOF >&2
+${0##*/}: shell integration not enabled
+Please add the following line to your rcfile.
+
+command -v ${0##*/} > /dev/null && eval "\$(${0##*/} -w bash)"
+EOF
+exit 1
