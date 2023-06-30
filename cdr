@@ -27,8 +27,7 @@ EOF
 }
 
 print_wrapper_script() {
-  shell=$1
-  case $shell in
+  case $1 in
     bash)
       cat <<EOF
 cdr() {
@@ -194,7 +193,7 @@ cdr() {
 EOF
       ;;
     *)
-      printf "%s\n" "${0##*/}: unsupported shell '$wrapper_target_shell'" >&2
+      printf "%s\n" "${0##*/}: unsupported shell '$1'" >&2
       exit 1
       ;;
   esac
