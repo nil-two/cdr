@@ -7,10 +7,10 @@ usage: ${0##*/} [<option(s)>]
 chdir with recursive directory searching.
 
 options:
+  -b, --base=DIRECTORY  set DIRECTORY to the base directory (default: CDR_BASE)
   -f, --filter=COMMAND  use COMMAND to select a directory (default: CDR_FILTER)
   -g, --git             enable searching from Git managed directoies
   -G, --no-git          disable searching from Git managed directoies
-  -r, --root=ROOT       set ROOT to the base directory (default: .)
   -s, --source=COMMAND  use COMMAND to list directories (default: CDR_SOURCE)
   -w, --wrapper=SHELL   output the wrapper script for SHELL and exit
       --help            print usage and exit
@@ -19,9 +19,9 @@ supported-shells:
   sh
 
 environment-variables:
+  CDR_BASE    set default -b/--base (default: .)
   CDR_FILTER  set default -f/--filter (default: percol)
   CDR_GIT     set default -g/--git (default: false)
-  CDR_ROOT    set default -r/--root (default: .)
   CDR_SOURCE  set default -s/--source (default: find -type d)
 EOF
 }
@@ -47,14 +47,32 @@ EOF
   esac
 }
 
+opt_base=${CDR_BASE:-.}
 opt_filter=${CDR_FILTER:-percol}
 opt_git=${CDR_GIT:-false}
-opt_root=${CDR_ROOT:-.}
 opt_source=${CDR_SOURCE:-find -type d}
 opt_wrapper=
 opt_help=false
 while [ $# -ge 1 ]; do
   case $1 in
+    -b*|--base|--base=*)
+      case $1 in
+        -b|--base)
+          if [ $# -lt 2 ]; then
+            printf "%r\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
+            exit 1
+          fi
+          opt_base=$2
+          shift
+          ;;
+        -b*)
+          opt_base=${1#-b}
+          ;;
+        --base=*)
+          opt_base=${1#--base=}
+          ;;
+      esac
+      ;;
     -f*|--filter|--filter=*)
       case $1 in
         -f|--filter)
@@ -98,24 +116,6 @@ while [ $# -ge 1 ]; do
           shift
           set -- "$next" "$@"
           continue
-          ;;
-      esac
-      ;;
-    -r*|--root|--root=*)
-      case $1 in
-        -r|--root)
-          if [ $# -lt 2 ]; then
-            printf "%r\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
-            exit 1
-          fi
-          opt_root=$2
-          shift
-          ;;
-        -r*)
-          opt_root=${1#-r}
-          ;;
-        --root=*)
-          opt_root=${1#--root=}
           ;;
       esac
       ;;
@@ -190,7 +190,7 @@ if [ -n "$opt_wrapper" ]; then
   exit 0
 fi
 if [ "$opt_git" = true ]; then
-  opt_root=$(git rev-parse --show-toplevel)
+  opt_base=$(git rev-parse --show-toplevel)
   opt_source='echo .; git ls-tree -rd --name-only --full-tree HEAD'
 fi
 
@@ -199,4 +199,4 @@ if [ -z "$sub_directory" ]; then
   exit 1
 fi
 
-printf "%s\n" "$opt_root/$sub_directory"
+printf "%s\n" "$opt_base/$sub_directory"
