@@ -7,6 +7,7 @@ build:
 
 lint:
 	@shellcheck cdr
+	@bash -c 'shellcheck <(echo '"'"'#!/bin/bash'"'"'; ./cdr --wrapper bash)'
 
 test:
 	@bats test
