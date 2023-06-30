@@ -10,6 +10,7 @@ options:
   -f, --filter=COMMAND  use COMMAND to select a directory (default: CDR_FILTER)
   -g, --git             enable searching from Git managed directoies
   -G, --no-git          disable searching from Git managed directoies
+  -r, --root=ROOT       set ROOT to the base directory (default: .)
   -s, --source=COMMAND  use COMMAND to list directories (default: CDR_SOURCE)
   -w, --wrapper=SHELL   output the wrapper script for SHELL and exit
       --help            print usage and exit
@@ -20,6 +21,7 @@ supported-shells:
 environment-variables:
   CDR_FILTER  set default -f/--filter (default: percol)
   CDR_GIT     set default -g/--git (default: false)
+  CDR_ROOT    set default -r/--root (default: .)
   CDR_SOURCE  set default -s/--source (default: find -type d)
 EOF
 }
@@ -33,6 +35,7 @@ cdr() {
   # dst:argparse:start
   local filter_command=\${CDR_FILTER-percol}
   local search_from_git=\${CDR_GIT-false}
+  local root=\${CDR_ROOT-.}
   local source_command=\${CDR_SOURCE-find -type d}
   local wrapper_target_shell=
   while [[ \$# -ge 1 ]]; do
@@ -80,6 +83,24 @@ cdr() {
             shift
             set -- "\$next" "\$@"
             continue
+            ;;
+        esac
+        ;;
+      -r*|--root|--root=*)
+        case \$1 in
+          -r|--root)
+            if [[ \$# -lt 2 ]]; then
+              printf "%r\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
+              return 1
+            fi
+            root=\$2
+            shift
+            ;;
+          -r*)
+            root=\${1#-r}
+            ;;
+          --root=*)
+            root=\${1#--root=}
             ;;
         esac
         ;;
@@ -180,6 +201,7 @@ EOF
 # src:argparse:start
 filter_command=${CDR_FILTER-percol}
 search_from_git=${CDR_GIT-false}
+root=${CDR_ROOT-.}
 source_command=${CDR_SOURCE-find -type d}
 wrapper_target_shell=
 while [[ $# -ge 1 ]]; do
@@ -227,6 +249,24 @@ while [[ $# -ge 1 ]]; do
           shift
           set -- "$next" "$@"
           continue
+          ;;
+      esac
+      ;;
+    -r*|--root|--root=*)
+      case $1 in
+        -r|--root)
+          if [[ $# -lt 2 ]]; then
+            printf "%r\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
+            exit 1
+          fi
+          root=$2
+          shift
+          ;;
+        -r*)
+          root=${1#-r}
+          ;;
+        --root=*)
+          root=${1#--root=}
           ;;
       esac
       ;;
