@@ -175,7 +175,7 @@ cdr() {
   local use_git=false
   if [[ \$search_from_git = true && \$(git rev-parse --is-inside-work-tree 2>&1) = true ]]; then
     use_git=true
-    source_command='cd "\$(git rev-parse --show-toplevel)"; echo .; git ls-tree -rt --format='"'"'%(objecttype) %(path)'"'"' HEAD | sed -ne '"'"'/^tree/{s/^tree //;p}'"'"''
+    source_command='echo .; git ls-tree -rd --name-only --full-tree HEAD'
   fi
 
   local directory=\$(bash -c "\$source_command" | bash -c "\$filter_command")
