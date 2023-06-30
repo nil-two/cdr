@@ -10,6 +10,7 @@ options:
   -f, --filter=COMMAND  use COMMAND to select a directory (default: CDR_FILTER)
   -g, --git             enable searching from Git managed directoies
   -G, --no-git          disable searching from Git managed directoies
+  -s, --source=COMMAND  use COMMAND to list directories (default: CDR_SOURCE)
   -w, --wrapper=SHELL   output the wrapper script for SHELL and exit
       --help            print usage and exit
 
@@ -19,6 +20,7 @@ supported-shells:
 environment-variables:
   CDR_FILTER  set default -f/--filter (default: percol)
   CDR_GIT     set default -g/--git (default: false)
+  CDR_SOURCE  set default -s/--source (default: find -type d)
 EOF
 }
 
@@ -31,6 +33,7 @@ cdr() {
   # dst:argparse:start
   local filter_command=\${CDR_FILTER-percol}
   local search_from_git=\${CDR_GIT-false}
+  local source_command=\${CDR_SOURCE-find -type d}
   local wrapper_target_shell=
   while [[ \$# -ge 1 ]]; do
     case \$1 in
@@ -77,6 +80,24 @@ cdr() {
             shift
             set -- "\$next" "\$@"
             continue
+            ;;
+        esac
+        ;;
+      -s*|--source|--source=*)
+        case \$1 in
+          -s|--source)
+            if [[ \$# -lt 2 ]]; then
+              printf "%s\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
+              return 1
+            fi
+            source_command=\$2
+            shift
+            ;;
+          -s*)
+            source_command=\${1#-s}
+            ;;
+          --source=*)
+            source_command=\${1#--source=}
             ;;
         esac
         ;;
@@ -130,16 +151,13 @@ cdr() {
   fi
   # dst:argparse:end
 
-  local source_listing_command
   local use_git=false
   if [[ \$search_from_git = true && \$(git rev-parse --is-inside-work-tree 2>&1) = true ]]; then
     use_git=true
-    source_listing_command='cd "\$(git rev-parse --show-toplevel)"; echo .; git ls-tree -rt --format='"'"'%(objecttype) %(path)'"'"' HEAD | sed -ne '"'"'/^tree/{s/^tree //;p}'"'"''
-  else
-    source_listing_command='find -type d'
+    source_command='cd "\$(git rev-parse --show-toplevel)"; echo .; git ls-tree -rt --format='"'"'%(objecttype) %(path)'"'"' HEAD | sed -ne '"'"'/^tree/{s/^tree //;p}'"'"''
   fi
 
-  local directory=\$(bash -c "\$source_listing_command" | bash -c "\$filter_command")
+  local directory=\$(bash -c "\$source_command" | bash -c "\$filter_command")
   if [[ -z \$directory ]]; then
     return 1
   fi
@@ -162,6 +180,7 @@ EOF
 # src:argparse:start
 filter_command=${CDR_FILTER-percol}
 search_from_git=${CDR_GIT-false}
+source_command=${CDR_SOURCE-find -type d}
 wrapper_target_shell=
 while [[ $# -ge 1 ]]; do
   case $1 in
@@ -208,6 +227,24 @@ while [[ $# -ge 1 ]]; do
           shift
           set -- "$next" "$@"
           continue
+          ;;
+      esac
+      ;;
+    -s*|--source|--source=*)
+      case $1 in
+        -s|--source)
+          if [[ $# -lt 2 ]]; then
+            printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
+            exit 1
+          fi
+          source_command=$2
+          shift
+          ;;
+        -s*)
+          source_command=${1#-s}
+          ;;
+        --source=*)
+          source_command=${1#--source=}
           ;;
       esac
       ;;
