@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -eu
 
 print_usage() {
@@ -38,12 +38,12 @@ cdr() {
   local source_command=\${CDR_SOURCE-find -type d}
   local wrapper_target_shell=
   local is_help=false
-  while [[ \$# -ge 1 ]]; do
+  while [ \$# -ge 1 ]; do
     case \$1 in
       -f*|--filter|--filter=*)
         case \$1 in
           -f|--filter)
-            if [[ \$# -lt 2 ]]; then
+            if [ \$# -lt 2 ]; then
               printf "%s\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
               return 1
             fi
@@ -89,7 +89,7 @@ cdr() {
       -r*|--root|--root=*)
         case \$1 in
           -r|--root)
-            if [[ \$# -lt 2 ]]; then
+            if [ \$# -lt 2 ]; then
               printf "%r\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
               return 1
             fi
@@ -107,7 +107,7 @@ cdr() {
       -s*|--source|--source=*)
         case \$1 in
           -s|--source)
-            if [[ \$# -lt 2 ]]; then
+            if [ \$# -lt 2 ]; then
               printf "%s\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
               return 1
             fi
@@ -125,7 +125,7 @@ cdr() {
       -w*|--wrapper|--wrapper=*)
         case \$1 in
           -w|--wrapper)
-            if [[ \$# -lt 2 ]]; then
+            if [ \$# -lt 2 ]; then
               printf "%s\n" "\${0##*/}: option requires an argument -- '\${1##*-}'" >&2
               return 1
             fi
@@ -167,24 +167,24 @@ cdr() {
   done
   # dst:argparse:end
 
-  if [[ \$is_help = true ]]; then
+  if "\$is_help"; then
     command cdr --help
     return 0
   fi
-  if [[ -n \$wrapper_target_shell ]]; then
+  if [ -n "\$wrapper_target_shell" ]; then
     command cdr --wrapper "\$wrapper_target_shell"
     return 0
   fi
-  if [[ \$git = true ]]; then
+  if "\$git"; then
     root=\$(git rev-parse --show-toplevel)
-    if [[ -z \$root ]]; then
+    if [ -z "\$root" ]; then
       return 1
     fi
     source_command='echo .; git ls-tree -rd --name-only --full-tree HEAD'
   fi
 
   local directory=\$(bash -c "\$source_command" | bash -c "\$filter_command")
-  if [[ -z \$directory ]]; then
+  if [ -z \$directory ]; then
     return 1
   fi
 
@@ -206,12 +206,12 @@ root=${CDR_ROOT-.}
 source_command=${CDR_SOURCE-find -type d}
 wrapper_target_shell=
 is_help=false
-while [[ $# -ge 1 ]]; do
+while [ $# -ge 1 ]; do
   case $1 in
     -f*|--filter|--filter=*)
       case $1 in
         -f|--filter)
-          if [[ $# -lt 2 ]]; then
+          if [ $# -lt 2 ]; then
             printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
@@ -257,7 +257,7 @@ while [[ $# -ge 1 ]]; do
     -r*|--root|--root=*)
       case $1 in
         -r|--root)
-          if [[ $# -lt 2 ]]; then
+          if [ $# -lt 2 ]; then
             printf "%r\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
@@ -275,7 +275,7 @@ while [[ $# -ge 1 ]]; do
     -s*|--source|--source=*)
       case $1 in
         -s|--source)
-          if [[ $# -lt 2 ]]; then
+          if [ $# -lt 2 ]; then
             printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
@@ -293,7 +293,7 @@ while [[ $# -ge 1 ]]; do
     -w*|--wrapper|--wrapper=*)
       case $1 in
         -w|--wrapper)
-          if [[ $# -lt 2 ]]; then
+          if [ $# -lt 2 ]; then
             printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
@@ -335,11 +335,11 @@ while [[ $# -ge 1 ]]; do
 done
 # src:argparse:end
 
-if [[ $is_help = true ]]; then
+if "$is_help"; then
   print_usage
   exit 0
 fi
-if [[ -n $wrapper_target_shell ]]; then
+if [ -n "$wrapper_target_shell" ]; then
   print_wrapper_script "$wrapper_target_shell"
   exit 0
 fi
