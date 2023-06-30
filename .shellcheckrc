@@ -1,2 +1,0 @@
-# SC2034: Allow unused variables to share argparse implementation
-disable=SC2034

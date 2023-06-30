@@ -47,12 +47,12 @@ EOF
   esac
 }
 
-filter_command=${CDR_FILTER:-percol}
-git=${CDR_GIT:-false}
-root=${CDR_ROOT:-.}
-source_command=${CDR_SOURCE:-find -type d}
-wrapper_target_shell=
-is_help=false
+opt_filter=${CDR_FILTER:-percol}
+opt_git=${CDR_GIT:-false}
+opt_root=${CDR_ROOT:-.}
+opt_source=${CDR_SOURCE:-find -type d}
+opt_wrapper=
+opt_help=false
 while [ $# -ge 1 ]; do
   case $1 in
     -f*|--filter|--filter=*)
@@ -62,24 +62,24 @@ while [ $# -ge 1 ]; do
             printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
-          filter_command=$2
+          opt_filter=$2
           shift
           ;;
         -f*)
-          filter_command=${1#-f}
+          opt_filter=${1#-f}
           ;;
         --filter=*)
-          filter_command=${1#--filter=}
+          opt_filter=${1#--filter=}
           ;;
       esac
       ;;
     -g*|--git)
       case $1 in
         -g|--git)
-          git=true
+          opt_git=true
           ;;
         -g*)
-          git=true
+          opt_git=true
           next=-${1#-g}
           shift
           set -- "$next" "$@"
@@ -90,10 +90,10 @@ while [ $# -ge 1 ]; do
     -G*|--no-git)
       case $1 in
         -G|--no-git)
-          git=false
+          opt_git=false
           ;;
         -G*)
-          git=false
+          opt_git=false
           next=-${1#-G}
           shift
           set -- "$next" "$@"
@@ -108,14 +108,14 @@ while [ $# -ge 1 ]; do
             printf "%r\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
-          root=$2
+          opt_root=$2
           shift
           ;;
         -r*)
-          root=${1#-r}
+          opt_root=${1#-r}
           ;;
         --root=*)
-          root=${1#--root=}
+          opt_root=${1#--root=}
           ;;
       esac
       ;;
@@ -126,14 +126,14 @@ while [ $# -ge 1 ]; do
             printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
-          source_command=$2
+          opt_source=$2
           shift
           ;;
         -s*)
-          source_command=${1#-s}
+          opt_source=${1#-s}
           ;;
         --source=*)
-          source_command=${1#--source=}
+          opt_source=${1#--source=}
           ;;
       esac
       ;;
@@ -144,27 +144,27 @@ while [ $# -ge 1 ]; do
             printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
-          wrapper_target_shell=$2
+          opt_wrapper=$2
           shift
           ;;
         -w*)
-          wrapper_target_shell=${1#-w}
+          opt_wrapper=${1#-w}
           ;;
         --wrapper=*)
-          wrapper_target_shell=${1#--wrapper=}
+          opt_wrapper=${1#--wrapper=}
           ;;
       esac
-      case $wrapper_target_shell in
+      case $opt_wrapper in
         sh)
           ;;
         *)
-          printf "%s\n" "${0##*/}: unsupported shell '$wrapper_target_shell'" >&2
+          printf "%s\n" "${0##*/}: unsupported shell '$opt_wrapper'" >&2
           exit 1
           ;;
       esac
       ;;
     --help)
-      is_help=true
+      opt_help=true
       ;;
     --)
       shift
@@ -181,31 +181,22 @@ while [ $# -ge 1 ]; do
   shift
 done
 
-if "$is_help"; then
+if [ "$opt_help" = true ]; then
   print_usage
   exit 0
 fi
-if [ -n "$wrapper_target_shell" ]; then
-  print_wrapper_script "$wrapper_target_shell"
+if [ -n "$opt_wrapper" ]; then
+  print_wrapper_script "$opt_wrapper"
   exit 0
+fi
+if [ "$opt_git" = true ]; then
+  opt_root=$(git rev-parse --show-toplevel)
+  opt_source='echo .; git ls-tree -rd --name-only --full-tree HEAD'
 fi
 
-if "$is_help"; then
-  print_usage
-  exit 0
-fi
-if [ -n "$wrapper_target_shell" ]; then
-  print_wrapper_script "$wrapper_target_shell"
-  exit 0
-fi
-if "$git"; then
-  root=$(git rev-parse --show-toplevel)
-  source_command='echo .; git ls-tree -rd --name-only --full-tree HEAD'
-fi
-
-directory=$(bash -c "$source_command" | bash -c "$filter_command")
-if [ -z "$directory" ]; then
+sub_directory=$(bash -c "$opt_source" | bash -c "$opt_filter")
+if [ -z "$sub_directory" ]; then
   exit 1
 fi
 
-printf "%s\n" "$root/$directory"
+printf "%s\n" "$opt_root/$sub_directory"
