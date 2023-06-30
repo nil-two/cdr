@@ -47,7 +47,7 @@ EOF
   esac
 }
 
-opt_base=${CDR_BASE:-.}
+opt_base=${CDR_BASE:-}
 opt_filter=${CDR_FILTER:-percol}
 opt_git=${CDR_GIT:-false}
 opt_source=${CDR_SOURCE:-find -type d}
@@ -199,4 +199,11 @@ if [ -z "$sub_directory" ]; then
   exit 1
 fi
 
-printf "%s\n" "$opt_base/$sub_directory"
+directory=
+if [ -n "$opt_base" ]; then
+  directory="$opt_base/$sub_directory"
+else
+  directory=$sub_directory
+fi
+
+printf "%s\n" "$directory"
