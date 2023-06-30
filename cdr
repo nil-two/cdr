@@ -183,12 +183,13 @@ cdr() {
     source_command='echo .; git ls-tree -rd --name-only --full-tree HEAD'
   fi
 
-  local directory=\$(bash -c "\$source_command" | bash -c "\$filter_command")
-  if [ -z \$directory ]; then
+  local directory
+  directory=\$(bash -c "\$source_command" | bash -c "\$filter_command")
+  if [ -z "\$directory" ]; then
     return 1
   fi
 
-  cd "\$root/\$directory"
+  cd "\$root/\$directory" || return 1
 }
 EOF
       ;;
