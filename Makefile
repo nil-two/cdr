@@ -5,5 +5,8 @@ all:
 build:
 	bash script/embed_argparse.bash
 
+lint:
+	@shellcheck cdr
+
 test:
 	@bats test
