@@ -47,10 +47,10 @@ EOF
   esac
 }
 
-filter_command=${CDR_FILTER-percol}
-git=${CDR_GIT-false}
-root=${CDR_ROOT-.}
-source_command=${CDR_SOURCE-find -type d}
+filter_command=${CDR_FILTER:-percol}
+git=${CDR_GIT:-false}
+root=${CDR_ROOT:-.}
+source_command=${CDR_SOURCE:-find -type d}
 wrapper_target_shell=
 is_help=false
 while [ $# -ge 1 ]; do
