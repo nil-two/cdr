@@ -38,6 +38,7 @@ cdr() {
   local root=\${CDR_ROOT-.}
   local source_command=\${CDR_SOURCE-find -type d}
   local wrapper_target_shell=
+  local is_help=false
   while [[ \$# -ge 1 ]]; do
     case \$1 in
       -f*|--filter|--filter=*)
@@ -149,8 +150,7 @@ cdr() {
         esac
         ;;
       --help)
-        command cdr --help
-        return 0
+        is_help=true
         ;;
       --)
         shift
@@ -166,12 +166,16 @@ cdr() {
     esac
     shift
   done
+  # dst:argparse:end
+
+  if [[ \$is_help = true ]]; then
+    command cdr --help
+    return 0
+  fi
   if [[ -n \$wrapper_target_shell ]]; then
     command cdr --wrapper "\$wrapper_target_shell"
     return 0
   fi
-  # dst:argparse:end
-
   if [[ \$git = true ]]; then
     root=\$(git rev-parse --show-toplevel)
     if [[ -z \$root ]]; then
@@ -202,6 +206,7 @@ git=${CDR_GIT-false}
 root=${CDR_ROOT-.}
 source_command=${CDR_SOURCE-find -type d}
 wrapper_target_shell=
+is_help=false
 while [[ $# -ge 1 ]]; do
   case $1 in
     -f*|--filter|--filter=*)
@@ -313,8 +318,7 @@ while [[ $# -ge 1 ]]; do
       esac
       ;;
     --help)
-      print_usage
-      exit 0
+      is_help=true
       ;;
     --)
       shift
@@ -330,11 +334,16 @@ while [[ $# -ge 1 ]]; do
   esac
   shift
 done
+# src:argparse:end
+
+if [[ $is_help = true ]]; then
+  print_usage
+  exit 0
+fi
 if [[ -n $wrapper_target_shell ]]; then
   print_wrapper_script "$wrapper_target_shell"
   exit 0
 fi
-# src:argparse:end
 
 cat <<EOF >&2
 ${0##*/}: shell integration not enabled
