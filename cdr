@@ -34,7 +34,7 @@ print_wrapper_script() {
 cdr() {
   # dst:argparse:start
   local filter_command=\${CDR_FILTER-percol}
-  local search_from_git=\${CDR_GIT-false}
+  local git=\${CDR_GIT-false}
   local root=\${CDR_ROOT-.}
   local source_command=\${CDR_SOURCE-find -type d}
   local wrapper_target_shell=
@@ -61,10 +61,10 @@ cdr() {
       -g*|--git)
         case \$1 in
           -g|--git)
-            search_from_git=true
+            git=true
             ;;
           -g*)
-            search_from_git=true
+            git=true
             next=-\${1#-g}
             shift
             set -- "\$next" "\$@"
@@ -75,10 +75,10 @@ cdr() {
       -G*|--no-git)
         case \$1 in
           -G|--no-git)
-            search_from_git=false
+            git=false
             ;;
           -G*)
-            search_from_git=false
+            git=false
             next=-\${1#-G}
             shift
             set -- "\$next" "\$@"
@@ -172,9 +172,11 @@ cdr() {
   fi
   # dst:argparse:end
 
-  local use_git=false
-  if [[ \$search_from_git = true && \$(git rev-parse --is-inside-work-tree 2>&1) = true ]]; then
-    use_git=true
+  if [[ \$git = true ]]; then
+    root=\$(git rev-parse --show-toplevel)
+    if [[ -z \$root ]]; then
+      return 1
+    fi
     source_command='echo .; git ls-tree -rd --name-only --full-tree HEAD'
   fi
 
@@ -183,11 +185,7 @@ cdr() {
     return 1
   fi
 
-  if [[ \$use_git = true ]]; then
-    cd "\$(git rev-parse --show-toplevel)/\$directory"
-  else
-    cd "\$directory"
-  fi
+  cd "\$root/\$directory"
 }
 EOF
       ;;
@@ -200,7 +198,7 @@ EOF
 
 # src:argparse:start
 filter_command=${CDR_FILTER-percol}
-search_from_git=${CDR_GIT-false}
+git=${CDR_GIT-false}
 root=${CDR_ROOT-.}
 source_command=${CDR_SOURCE-find -type d}
 wrapper_target_shell=
@@ -227,10 +225,10 @@ while [[ $# -ge 1 ]]; do
     -g*|--git)
       case $1 in
         -g|--git)
-          search_from_git=true
+          git=true
           ;;
         -g*)
-          search_from_git=true
+          git=true
           next=-${1#-g}
           shift
           set -- "$next" "$@"
@@ -241,10 +239,10 @@ while [[ $# -ge 1 ]]; do
     -G*|--no-git)
       case $1 in
         -G|--no-git)
-          search_from_git=false
+          git=false
           ;;
         -G*)
-          search_from_git=false
+          git=false
           next=-${1#-G}
           shift
           set -- "$next" "$@"
