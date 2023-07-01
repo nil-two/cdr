@@ -47,7 +47,7 @@ Requirements
 
 - sh
 - find
-- Percol (If you use default CDR\_FILTER)
+- Percol (If you use default `CDR_FILTER`)
 - Git (If you use -g, --git option)
 
 Installation
@@ -75,15 +75,29 @@ Note: In this example, `$HOME/bin` must be included in `$PATH`.
 Options
 -------
 
-### -f, --filter=COMMAND
+### -b, --base=\<directory\>
 
-Use COMMAND to select directory.
-Default value is value of CDR\_FILTER.
-This option takes precedence over CDR\_FILTER.
+Use the `directory` to the base directory.
+Default value is value of `CDR_BASE` or none.
+This option takes precedence over `CDR_BASE`.
 
 ```
-# Use peco to select the directry
-cdr -fpeco
+# Use /etc/nginx to the base directry
+cdr -b/etc/nginx
+
+# Use ./public to the base directry
+cdr -bpublic
+```
+
+### -f, --filter=\<command\>
+
+Use the `command` to select directory.
+Default value is value of `CDR_FILTER (percol)`.
+This option takes precedence over `CDR_FILTER`.
+
+```
+# Use fzy to select the directry
+cdr -ffzy
 
 # Use fzf with preview to select the directry
 cdr -f'fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
@@ -92,8 +106,7 @@ cdr -f'fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
 ### -g, --git
 
 Enable searching from Git managed directoies.
-The Git root directory will be searched from the current directory.
-If the Git root directory is not found, this option will be ignoreed.
+This options is equivalent to `--base "$(git rev-parse --show-toplevel)" --source 'echo .; git ls-tree -rd --name-only --full-tree HEAD'`.
 This option takes precedence over CDR\_GIT.
 
 ```
@@ -111,17 +124,35 @@ Disable searching from Git managed directoies.
 cdr -G
 ```
 
-### -w, --wrapper=SHELL
+### -s, --source=\<command\>
 
-Output the wrapper script for SHELL and exit.
+Use the `command` to list directories.
+Default value is value of `CDR_SOURCE (find -type d)`.
+This option takes precedence over `CDR_SOURCE`.
+
+```
+# Use ls to list directries
+cdr -sls
+
+# Use combined command to list directories
+cdr -s'echo /etc/nginx; echo /var/log/nginx'
+```
+
+### -w, --wrapper=\<shell\>
+
+Output the wrapper script for `shell` and exit.
 
 Supported shells are as follows:
 
 - sh
+- bash
 
 ```
 $ eval "$(cdr -w sh)"
 (Enable the shell integration for the shell compatible with Bourne Shell)
+
+$ eval "$(cdr -w bash)"
+(Enable the shell integration for Bash)
 ```
 
 ### --help
@@ -133,17 +164,39 @@ $ cdr -h
 (Print usage)
 ```
 
+### [\<directory\>]
+
+Chdir to the directory without selecting.
+
+```
+$ cdr /etc/nginx
+(Chdir to /etc/nginx)
+```
+
 Variables
 ---------
 
+### `CDR_BASE`
+
+The `directory` to set the base directory.
+Default value is none.
+
+```
+# Use /etc/nginx to the base directry
+export CDR_BASE=/etc/nginx
+
+# Use ./public to the base directry
+export CDR_BASE=public
+```
+
 ### `CDR_FILTER`
 
-The command to use select a directory.
+The `command` to use select a directory.
 Default value is `percol`.
 
 ```
-# Use peco to select the directry
-export CDR_FILTER=peco
+# Use fzy to select the directry
+export CDR_FILTER=fzy
 
 # Use fzf with preview to select the directry
 export CDR_FILTER='fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
@@ -160,6 +213,19 @@ export CDR_GIT=true
 
 # Disable searching from Git managed directoies.
 export CDR_GIT=false
+```
+
+### -s, --source=\<command\>
+
+The `command` to list directories.
+Default value is `find -type d`.
+
+```
+# Use ls to list directries
+export CDR_SOURCE='ls'
+
+# Use combined command to list directories
+export CDR_SOURCE='echo /etc/nginx; echo /var/log/nginx'
 ```
 
 License
