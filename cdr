@@ -30,78 +30,79 @@ EOF
 print_wrapper_script() {
   case $1 in
     sh)
-      cat <<EOF
-cdr() {
-  set -- "\$(command cdr "\$@")"
-  if [ -d "\$1" ]; then
-    cd "\$1" || return 1
-  elif [ -n "\$1" ]; then
-    printf "%s\n" "\$1"
-  fi
-}
-EOF
+      cat <<'      EOF' | sed 's/^ \{6\}//'
+      cdr() {
+        set -- "$(command cdr "$@")"
+        if [ -d "$1" ]; then
+          cd "$1" || return 1
+        elif [ -n "$1" ]; then
+          printf "%s\n" "$1"
+        fi
+      }
+      EOF
       ;;
     bash)
-      cat <<EOF
-cdr() {
-  set -- "\$(command cdr "\$@")"
-  if [ -d "\$1" ]; then
-    cd "\$1" || return 1
-  elif [ -n "\$1" ]; then
-    printf "%s\n" "\$1"
-  fi
-}
+      cat <<'      EOF' | sed 's/^ \{6\}//'
+      cdr() {
+        set -- "$(command cdr "$@")"
+        if [ -d "$1" ]; then
+          cd "$1" || return 1
+        elif [ -n "$1" ]; then
+          printf "%s\n" "$1"
+        fi
+      }
 
-_cdr() {
-  local cur prev words cword split
-  _init_completion -s || return
+      _cdr() {
+        local cur prev words cword split
+        _init_completion -s || return
 
-  local options=(
-    '--base='
-    '--filter='
-    '--git'
-    '--no-git'
-    '--source='
-    '--wrapper='
-    '--help'
-  )
-  local wrapper_target_shells=(
-    'sh'
-    'bash'
-  )
+        local options=(
+          '--base='
+          '--filter='
+          '--git'
+          '--no-git'
+          '--source='
+          '--wrapper='
+          '--help'
+        )
+        local wrapper_target_shells=(
+          'sh'
+          'bash'
+        )
 
-  case \$prev in
-    -b|--base)
-      _filedir -d
-      return
-      ;;
-    -f|--filter)
-      COMPREPLY=( \$(compgen -A command -- "\$cur") )
-      return
-      ;;
-    -s|--source)
-      COMPREPLY=( \$(compgen -A command -- "\$cur") )
-      return
-      ;;
-    -w|--wrapper)
-      COMPREPLY=( \$(compgen -W '"\${wrapper_target_shells[@]}"' -- "\$cur") )
-      return
-      ;;
-  esac
-  \$split && return
+        case $prev in
+          -b|--base)
+            _filedir -d
+            return
+            ;;
+          -f|--filter)
+            COMPREPLY=( $(compgen -A command -- "$cur") )
+            return
+            ;;
+          -s|--source)
+            COMPREPLY=( $(compgen -A command -- "$cur") )
+            return
+            ;;
+          -w|--wrapper)
+            COMPREPLY=( $(compgen -W '"${wrapper_target_shells[@]}"' -- "$cur") )
+            return
+            ;;
+        esac
+        $split && return
 
-  case \$cur in
-    -*)
-      COMPREPLY=( \$(compgen -W '"\${options[@]}"' -- "\$cur") )
-      [[ \${COMPREPLY[0]} == *= ]] && compopt -o nospace
-      ;;
-    *)
-      _filedir -d
-      ;;
-  esac
-}
-complete -F _cdr cdr
-EOF
+        case $cur in
+          -*)
+            COMPREPLY=( $(compgen -W '"${options[@]}"' -- "$cur") )
+            [[ ${COMPREPLY[0]} == *= ]] && compopt -o nospace
+            ;;
+          *)
+            _filedir -d
+            ;;
+        esac
+      }
+
+      complete -F _cdr cdr
+      EOF
       ;;
     *)
       printf "%s\n" "${0##*/}: unsupported shell '$1'" >&2
