@@ -28,13 +28,13 @@ check() {
 @test 'cdr: print a selected directory without chdir if no arguments passed' {
   check "$cdr"
   [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") == "C" ]]
+  [[ $(cat "$stdout") == C ]]
 }
 
 @test 'cdr: print a selected directory without chdir if double-dash passed' {
   check "$cdr" --
   [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") == "C" ]]
+  [[ $(cat "$stdout") == C ]]
 }
 
 @test 'cdr: output error if unknown option passed' {
@@ -48,14 +48,14 @@ check() {
   check "$cdr" "$tmpdir/sub"
   cat "$stdout"
   [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") =~ "$tmpdir/sub" ]]
+  [[ $(cat "$stdout") == $tmpdir/sub ]]
 }
 
 @test 'cdr: print the directory without chdir if directory passed with double-dash' {
   mkdir "$tmpdir/sub"
   check "$cdr" -- "$tmpdir/sub"
   [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") =~ "$tmpdir/sub" ]]
+  [[ $(cat "$stdout") == $tmpdir/sub ]]
 }
 
 # vim: ft=bash
