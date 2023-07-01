@@ -201,7 +201,7 @@ fi
 
 directory=
 if [ -n "$opt_base" ]; then
-  directory="$opt_base/$sub_directory"
+  directory=$opt_base/$sub_directory
 else
   directory=$sub_directory
 fi
