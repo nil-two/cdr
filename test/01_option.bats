@@ -65,7 +65,7 @@ check() {
 
 @test 'cdr: enable searching from Git managed directories if -g passed' {
   cd "$tmpdir/sub"
-  git init > /dev/null
+  git init || true > /dev/null 2>&1
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
   git commit --author 'test <test@example.com>' --message test > /dev/null
@@ -76,7 +76,7 @@ check() {
 
 @test 'cdr: enable searching from Git managed directories if --git passed' {
   cd "$tmpdir/sub"
-  git init > /dev/null
+  git init || true > /dev/null 2>&1
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
   git commit --author 'test <test@example.com>' --message test > /dev/null
@@ -88,7 +88,7 @@ check() {
 @test 'cdr: enable searching from Git managed directories if CDR_GIT set to true' {
   export CDR_GIT=true
   cd "$tmpdir/sub"
-  git init > /dev/null
+  git init || true > /dev/null 2>&1
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
   git commit --author 'test <test@example.com>' --message test > /dev/null
@@ -100,7 +100,7 @@ check() {
 @test 'cdr: disable searching from Git managed directories if -G passed' {
   CDR_GIT=true
   cd "$tmpdir/sub"
-  git init > /dev/null
+  git init || true > /dev/null 2>&1
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
   git commit --author 'test <test@example.com>' --message test > /dev/null
@@ -112,7 +112,7 @@ check() {
 @test 'cdr: disable searching from Git managed directories if --no-git passed' {
   CDR_GIT=true
   cd "$tmpdir/sub"
-  git init > /dev/null
+  git init || true > /dev/null 2>&1
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
   git commit --author 'test <test@example.com>' --message test > /dev/null
@@ -124,7 +124,7 @@ check() {
 @test 'cdr: disable searching from Git managed directories if CDR_GIT set to not true' {
   CDR_GIT=false
   cd "$tmpdir/sub"
-  git init > /dev/null
+  git init || true > /dev/null 2>&1
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
   git commit --author 'test <test@example.com>' --message test > /dev/null
