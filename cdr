@@ -182,7 +182,7 @@ while [ $# -ge 1 ]; do
   esac
   shift
 done
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 if [ $# -ge 1 ]; then
   arg_directory=$1
 fi
