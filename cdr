@@ -9,8 +9,8 @@ chdir with recursive directory searching.
 options:
   -b, --base=<directory>  use the directory to the base directory
   -f, --filter=<command>  use the command to select a directory
-  -g, --git               enable searching from Git managed directoies
-  -G, --no-git            disable searching from Git managed directoies
+  -g, --git               enable searching from Git managed directories
+  -G, --no-git            disable searching from Git managed directories
   -s, --source=<command>  use the command to list directories
   -w, --wrapper=<shell>   output the wrapper script for the shell and exit
       --help              print usage and exit
