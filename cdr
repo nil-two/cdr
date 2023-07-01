@@ -7,14 +7,14 @@ usage: ${0##*/} [<option(s)>] [<directory>]
 chdir with recursive directory searching.
 
 options:
-  -b, --base=DIRECTORY  set DIRECTORY to the base directory (default: CDR_BASE)
-  -f, --filter=COMMAND  use COMMAND to select a directory (default: CDR_FILTER)
-  -g, --git             enable searching from Git managed directoies
-  -G, --no-git          disable searching from Git managed directoies
-  -s, --source=COMMAND  use COMMAND to list directories (default: CDR_SOURCE)
-  -w, --wrapper=SHELL   output the wrapper script for SHELL and exit
-      --help            print usage and exit
-  [<directory>]         chdir to the directory without selecting
+  -b, --base=<directory>  use the directory to the base directory
+  -f, --filter=<command>  use the command to select a directory
+  -g, --git               enable searching from Git managed directoies
+  -G, --no-git            disable searching from Git managed directoies
+  -s, --source=<command>  use the command to list directories
+  -w, --wrapper=<shell>   output the wrapper script for the shell and exit
+      --help              print usage and exit
+  [<directory>]           chdir to the directory without selecting
 
 supported-shells:
   sh, bash

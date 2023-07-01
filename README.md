@@ -19,22 +19,27 @@ Usage
 -----
 
 ```
-$ cdr [<option(s)>]
+$ cdr [<option(s)>] [<directory>]
 chdir with recursive directory searching.
 
 options:
-  -f, --filter=COMMAND  use COMMAND to select a directory (default: CDR_FILTER)
-  -g, --git             enable searching from Git managed directoies
-  -G, --no-git          disable searching from Git managed directoies
-  -w, --wrapper=SHELL   output the wrapper script for SHELL and exit
-      --help            print usage and exit
+  -b, --base=<directory>  use the directory to the base directory
+  -f, --filter=<command>  use the command to select a directory
+  -g, --git               enable searching from Git managed directoies
+  -G, --no-git            disable searching from Git managed directoies
+  -s, --source=<command>  use the command to list directories
+  -w, --wrapper=<shell>   output the wrapper script for the shell and exit
+      --help              print usage and exit
+  [<directory>]           chdir to the directory without selecting
 
 supported-shells:
-  bash
+  sh, bash
 
 environment-variables:
+  CDR_BASE    set default -b/--base (default: .)
   CDR_FILTER  set default -f/--filter (default: percol)
   CDR_GIT     set default -g/--git (default: false)
+  CDR_SOURCE  set default -s/--source (default: find -type d)
 ```
 
 Requirements
