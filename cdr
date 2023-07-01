@@ -203,6 +203,9 @@ if [ "$opt_git" = true ]; then
   opt_base=$(git rev-parse --show-toplevel)
   opt_source='echo .; git ls-tree -rd --name-only --full-tree HEAD'
 fi
+if [ -n "$opt_base" ]; then
+  cd "$opt_base"
+fi
 
 sub_directory=$(bash -c "$opt_source" | bash -c "$opt_filter")
 if [ -z "$sub_directory" ]; then
