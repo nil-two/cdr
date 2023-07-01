@@ -1,7 +1,7 @@
 cdr
 ===
 
-![CI](https://github.com/nil-two/cdr/workflows/CI/badge.svg)
+[![CI](https://github.com/nil-two/cdr/actions/workflows/test.yml/badge.svg)](https://github.com/nil-two/cdr/actions/workflows/test.yml)
 
 Chdir with recursive directory searching.
 
@@ -55,7 +55,7 @@ Installation
 
 1. Copy `cdr` into your `$PATH`.
 2. Make `cdr` executable.
-3. Add following config to your shell's rc file.
+3. Add following config to your shell's rcfile.
 
 | Shell |                       |
 |-------|-----------------------|
