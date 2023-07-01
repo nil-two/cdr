@@ -37,7 +37,7 @@ check() {
   [[ $(cat "$stdout") == $tmpdir/sub/./CX ]]
 }
 
-@test 'cdr: print error and exit if unknown option passed' {
+@test 'cdr: print error if unknown option passed' {
   check "$cmd" --vim
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
@@ -193,7 +193,7 @@ check() {
   [[ $(cat "$stdout") =~ ^"cdr() {" ]]
 }
 
-@test 'cdr: print error and exit if --wrapper unsupported-shell passed' {
+@test 'cdr: print error if --wrapper unsupported-shell passed' {
   check "$cmd" --wrapper vim
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^'cdr: unsupported shell' ]]
