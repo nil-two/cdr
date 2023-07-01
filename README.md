@@ -216,7 +216,7 @@ export CDR_GIT=true
 export CDR_GIT=false
 ```
 
-### -s, --source=\<command\>
+### `CDR_SOURCE`
 
 The `command` to list directories.
 Default value is `find -type d`.
