@@ -3,7 +3,7 @@ set -eu
 
 print_usage() {
   cat <<EOF
-usage: ${0##*/} [<option(s)>]
+usage: ${0##*/} [<option(s)>] [<directory>]
 chdir with recursive directory searching.
 
 options:
@@ -14,6 +14,7 @@ options:
   -s, --source=COMMAND  use COMMAND to list directories (default: CDR_SOURCE)
   -w, --wrapper=SHELL   output the wrapper script for SHELL and exit
       --help            print usage and exit
+  [<directory>]         chdir to the directory without selecting
 
 supported-shells:
   sh
@@ -53,6 +54,7 @@ opt_git=${CDR_GIT:-false}
 opt_source=${CDR_SOURCE:-find -type d}
 opt_wrapper=
 opt_help=false
+arg_directory=
 while [ $# -ge 1 ]; do
   case $1 in
     -b*|--base|--base=*)
@@ -180,6 +182,10 @@ while [ $# -ge 1 ]; do
   esac
   shift
 done
+shift $(($OPTIND - 1))
+if [ $# -ge 1 ]; then
+  arg_directory=$1
+fi
 
 if [ "$opt_help" = true ]; then
   print_usage
@@ -187,6 +193,10 @@ if [ "$opt_help" = true ]; then
 fi
 if [ -n "$opt_wrapper" ]; then
   print_wrapper_script "$opt_wrapper"
+  exit 0
+fi
+if [ -n "$arg_directory" ]; then
+  printf "%s\n" "$arg_directory"
   exit 0
 fi
 if [ "$opt_git" = true ]; then
