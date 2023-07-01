@@ -65,10 +65,12 @@ check() {
 
 @test 'cdr: enable searching from Git managed directories if -g passed' {
   cd "$tmpdir/sub"
-  git init || true > /dev/null 2>&1
+  git init > /dev/null 2>&1 || true
+  git config user.name "test"
+  git config user.email "test@example.com"
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
-  git commit --author 'test <test@example.com>' --message test > /dev/null
+  git commit -m test > /dev/null
   check "$cdr" -g
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "$(realpath "$tmpdir/sub/BX")" ]]
@@ -76,10 +78,12 @@ check() {
 
 @test 'cdr: enable searching from Git managed directories if --git passed' {
   cd "$tmpdir/sub"
-  git init || true > /dev/null 2>&1
+  git init > /dev/null 2>&1 || true
+  git config user.name "test"
+  git config user.email "test@example.com"
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
-  git commit --author 'test <test@example.com>' --message test > /dev/null
+  git commit -m test > /dev/null
   check "$cdr" --git
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "$(realpath "$tmpdir/sub/BX")" ]]
@@ -88,10 +92,12 @@ check() {
 @test 'cdr: enable searching from Git managed directories if CDR_GIT set to true' {
   export CDR_GIT=true
   cd "$tmpdir/sub"
-  git init || true > /dev/null 2>&1
+  git init > /dev/null 2>&1 || true
+  git config user.name "test"
+  git config user.email "test@example.com"
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
-  git commit --author 'test <test@example.com>' --message test > /dev/null
+  git commit -m test > /dev/null
   check "$cdr"
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "$(realpath "$tmpdir/sub/BX")" ]]
@@ -100,10 +106,12 @@ check() {
 @test 'cdr: disable searching from Git managed directories if -G passed' {
   CDR_GIT=true
   cd "$tmpdir/sub"
-  git init || true > /dev/null 2>&1
+  git init > /dev/null 2>&1 || true
+  git config user.name "test"
+  git config user.email "test@example.com"
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
-  git commit --author 'test <test@example.com>' --message test > /dev/null
+  git commit -m test > /dev/null
   check "$cdr" -G
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "$tmpdir/sub/./CX" ]]
@@ -112,10 +120,12 @@ check() {
 @test 'cdr: disable searching from Git managed directories if --no-git passed' {
   CDR_GIT=true
   cd "$tmpdir/sub"
-  git init || true > /dev/null 2>&1
+  git init > /dev/null 2>&1 || true
+  git config user.name "test"
+  git config user.email "test@example.com"
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
-  git commit --author 'test <test@example.com>' --message test > /dev/null
+  git commit -m test > /dev/null
   check "$cdr" --no-git
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "$tmpdir/sub/./CX" ]]
@@ -124,10 +134,12 @@ check() {
 @test 'cdr: disable searching from Git managed directories if CDR_GIT set to not true' {
   CDR_GIT=false
   cd "$tmpdir/sub"
-  git init || true > /dev/null 2>&1
+  git init > /dev/null 2>&1 || true
+  git config user.name "test"
+  git config user.email "test@example.com"
   touch "$tmpdir/sub/BX/FA"
   git add "$tmpdir/sub/BX/FA"
-  git commit --author 'test <test@example.com>' --message test > /dev/null
+  git commit -m test > /dev/null
   check "$cdr"
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "$tmpdir/sub/./CX" ]]
