@@ -25,8 +25,8 @@ chdir with recursive directory searching.
 options:
   -b, --base=<directory>  use the directory to the base directory
   -f, --filter=<command>  use the command to select a directory
-  -g, --git               enable searching from Git managed directoies
-  -G, --no-git            disable searching from Git managed directoies
+  -g, --git               enable searching from Git managed directories
+  -G, --no-git            disable searching from Git managed directories
   -s, --source=<command>  use the command to list directories
   -w, --wrapper=<shell>   output the wrapper script for the shell and exit
       --help              print usage and exit
@@ -36,7 +36,7 @@ supported-shells:
   sh, bash
 
 environment-variables:
-  CDR_BASE    set default -b/--base (default: .)
+  CDR_BASE    set default -b/--base
   CDR_FILTER  set default -f/--filter (default: percol)
   CDR_GIT     set default -g/--git (default: false)
   CDR_SOURCE  set default -s/--source (default: find -type d)
@@ -82,10 +82,10 @@ Default value is value of `CDR_BASE` or none.
 This option takes precedence over `CDR_BASE`.
 
 ```
-# Use /etc/nginx to the base directry
+# Use /etc/nginx to the base directory
 cdr -b/etc/nginx
 
-# Use ./public to the base directry
+# Use ./public to the base directory
 cdr -bpublic
 ```
 
@@ -96,28 +96,29 @@ Default value is value of `CDR_FILTER (percol)`.
 This option takes precedence over `CDR_FILTER`.
 
 ```
-# Use fzy to select the directry
+# Use fzy to select the directory
 cdr -ffzy
 
-# Use fzf with preview to select the directry
+# Use fzf with preview to select the directory
 cdr -f'fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
 ```
 
 ### -g, --git
 
-Enable searching from Git managed directoies.
-This options is equivalent to `--base "$(git rev-parse --show-toplevel)" --source 'echo .; git ls-tree -rd --name-only --full-tree HEAD'`.
-This option takes precedence over CDR\_GIT.
+Enable searching from Git managed directories.
+This option is equivalent to `--base "$(git rev-parse --show-toplevel)" --source 'echo .; git ls-tree -rd --name-only --full-tree HEAD'`.
+This option takes precedence over `CDR_GIT`.
 
 ```
-# Select a directory from Git managed directoies
+# Select a directory from Git managed directories
 cdr -g
 ```
 
 ### -G, --no-git
 
-Disable searching from Git managed directoies.
+Disable searching from Git managed directories.
 -g/--git and -G/--no-git can be specified at the same time, but the last one takes precedence.
+This option takes precedence over `CDR_GIT`.
 
 ```
 # Select a directory from directories under the current directory
@@ -131,7 +132,7 @@ Default value is value of `CDR_SOURCE (find -type d)`.
 This option takes precedence over `CDR_SOURCE`.
 
 ```
-# Use ls to list directries
+# Use ls to list directories
 cdr -sls
 
 # Use combined command to list directories
@@ -182,10 +183,10 @@ The `directory` to set the base directory.
 Default value is none.
 
 ```
-# Use /etc/nginx to the base directry
+# Use /etc/nginx to the base directory
 export CDR_BASE=/etc/nginx
 
-# Use ./public to the base directry
+# Use ./public to the base directory
 export CDR_BASE=public
 ```
 
@@ -195,23 +196,23 @@ The `command` to use select a directory.
 Default value is `percol`.
 
 ```
-# Use fzy to select the directry
+# Use fzy to select the directory
 export CDR_FILTER=fzy
 
-# Use fzf with preview to select the directry
+# Use fzf with preview to select the directory
 export CDR_FILTER='fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
 ```
 
 ### `CDR_GIT`
 
-Whether to enable searching from Git managed directoies.
+Whether to enable searching from Git managed directories.
 Default value is `false`.
 
 ```
-# Enable searching from Git managed directoies.
+# Enable searching from Git managed directories.
 export CDR_GIT=true
 
-# Disable searching from Git managed directoies.
+# Disable searching from Git managed directories.
 export CDR_GIT=false
 ```
 
@@ -221,7 +222,7 @@ The `command` to list directories.
 Default value is `find -type d`.
 
 ```
-# Use ls to list directries
+# Use ls to list directories
 export CDR_SOURCE='ls'
 
 # Use combined command to list directories
