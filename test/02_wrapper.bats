@@ -32,4 +32,11 @@ check_wrapper_with_script() {
   [[ $(cat "$stdout") == $(realpath "$tmpdir/sub/CX") ]]
 }
 
+@test 'cdr wrapper: supports bash' {
+  cd "$tmpdir"
+  check_wrapper_with_script 'bash -c '"'"'eval "$("$CDR" -w bash)"; "$(basename "$CDR")"; pwd'"'"''
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == $(realpath "$tmpdir/sub/CX") ]]
+}
+
 # vim: ft=bash

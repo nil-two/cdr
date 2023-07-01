@@ -17,7 +17,7 @@ options:
   [<directory>]         chdir to the directory without selecting
 
 supported-shells:
-  sh
+  sh, bash
 
 environment-variables:
   CDR_BASE    set default -b/--base (default: .)
@@ -39,6 +39,65 @@ cdr() {
     printf "%s\n" "\$1"
   fi
 }
+EOF
+      ;;
+    bash)
+      cat <<EOF
+cdr() {
+  local directory
+  directory=\$(command cdr "\$@")
+  if [[ -d "\$directory" ]]; then
+    cd "\$directory" || return 1
+  elif [[ -n "\$directory" ]]; then
+    printf "%s\n" "\$directory"
+  fi
+}
+_cdr() {
+  local cur prev words cword split
+  _init_completion -s || return
+  local options=(
+    '--base='
+    '--filter='
+    '--git'
+    '--no-git'
+    '--source='
+    '--wrapper='
+    '--help'
+  )
+  local wrapper_target_shells=(
+    'sh'
+    'bash'
+  )
+  case \$prev in
+    -b|--base)
+      _filedir -d
+      return
+      ;;
+    -f|--filter)
+      COMPREPLY=( \$(compgen -A command -- "\$cur") )
+      return
+      ;;
+    -s|--source)
+      COMPREPLY=( \$(compgen -A command -- "\$cur") )
+      return
+      ;;
+    -w|--wrapper)
+      COMPREPLY=( \$(compgen -W '"\${wrapper_target_shells[@]}"' -- "\$cur") )
+      return
+      ;;
+  esac
+  \$split && return
+  case \$cur in
+    -*)
+      COMPREPLY=( \$(compgen -W '"\${options[@]}"' -- "\$cur") )
+      [[ \${COMPREPLY[0]} == *= ]] && compopt -o nospace
+      ;;
+    *)
+      _filedir -d
+      ;;
+  esac
+}
+complete -F _cdr cdr
 EOF
       ;;
     *)
@@ -157,7 +216,7 @@ while [ $# -ge 1 ]; do
           ;;
       esac
       case $opt_wrapper in
-        sh)
+        sh|bash)
           ;;
         *)
           printf "%s\n" "${0##*/}: unsupported shell '$opt_wrapper'" >&2
@@ -207,7 +266,7 @@ if [ -n "$opt_base" ]; then
   cd "$opt_base"
 fi
 
-sub_directory=$(bash -c "$opt_source" | bash -c "$opt_filter")
+sub_directory=$(sh -c "$opt_source" | sh -c "$opt_filter")
 if [ -z "$sub_directory" ]; then
   exit 1
 fi
