@@ -44,17 +44,18 @@ EOF
     bash)
       cat <<EOF
 cdr() {
-  local directory
-  directory=\$(command cdr "\$@")
-  if [[ -d "\$directory" ]]; then
-    cd "\$directory" || return 1
-  elif [[ -n "\$directory" ]]; then
-    printf "%s\n" "\$directory"
+  set -- "\$(command cdr "\$@")"
+  if [ -d "\$1" ]; then
+    cd "\$1" || return 1
+  elif [ -n "\$1" ]; then
+    printf "%s\n" "\$1"
   fi
 }
+
 _cdr() {
   local cur prev words cword split
   _init_completion -s || return
+
   local options=(
     '--base='
     '--filter='
@@ -68,6 +69,7 @@ _cdr() {
     'sh'
     'bash'
   )
+
   case \$prev in
     -b|--base)
       _filedir -d
@@ -87,6 +89,7 @@ _cdr() {
       ;;
   esac
   \$split && return
+
   case \$cur in
     -*)
       COMPREPLY=( \$(compgen -W '"\${options[@]}"' -- "\$cur") )
@@ -120,7 +123,7 @@ while [ $# -ge 1 ]; do
       case $1 in
         -b|--base)
           if [ $# -lt 2 ]; then
-            printf "%r\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
+            printf "%s\n" "${0##*/}: option requires an argument -- '${1##*-}'" >&2
             exit 1
           fi
           opt_base=$2
@@ -266,16 +269,16 @@ if [ -n "$opt_base" ]; then
   cd "$opt_base"
 fi
 
-sub_directory=$(sh -c "$opt_source" | sh -c "$opt_filter")
-if [ -z "$sub_directory" ]; then
+directory=$(sh -c "$opt_source" | sh -c "$opt_filter")
+if [ -z "$directory" ]; then
   exit 1
 fi
-
-directory=
 if [ -n "$opt_base" ]; then
-  directory=$opt_base/$sub_directory
-else
-  directory=$sub_directory
+  if [ ! -d "$opt_base/$directory" ]; then
+    printf "%s\n" "$directory"
+    exit 1
+  fi
+  directory=$opt_base/$directory
 fi
 
 printf "%s\n" "$directory"
