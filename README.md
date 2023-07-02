@@ -106,6 +106,7 @@ cdr -f'fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
 ### -g, --git
 
 Enable searching from Git managed directories.
+Default value is value of `CDR_GIT (false)`.
 This option is equivalent to `--base "$(git rev-parse --show-toplevel)" --source 'echo .; git ls-tree -rd --name-only --full-tree HEAD'`.
 This option takes precedence over `CDR_GIT`.
 
@@ -167,7 +168,7 @@ $ cdr -h
 
 ### [\<directory\>]
 
-Chdir to the directory without selecting.
+Chdir to the `directory` without selecting.
 
 ```
 $ cdr /etc/nginx
