@@ -106,7 +106,7 @@ print_wrapper_script() {
       ;;
     *)
       printf "%s\n" "${0##*/}: unsupported shell '$1'" >&2
-      exit 1
+      return 1
       ;;
   esac
 }
