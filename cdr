@@ -57,17 +57,17 @@ _cdr() {
   _init_completion -s || return
 
   local options=(
-    '--base='
-    '--filter='
-    '--git'
-    '--no-git'
-    '--source='
-    '--wrapper='
-    '--help'
+    --base=
+    --filter=
+    --git
+    --no-git
+    --source=
+    --wrapper=
+    --help
   )
   local wrapper_target_shells=(
-    'sh'
-    'bash'
+    sh
+    bash
   )
 
   case $prev in
@@ -105,7 +105,7 @@ complete -F _cdr cdr
 EOF
       ;;
     *)
-      printf "%s\n" "${0##*/}: unsupported shell '$1'" >&2
+      printf "%s\n" "${0##*/}: unsupported shell -- '$1'" >&2
       return 1
       ;;
   esac
@@ -223,7 +223,7 @@ while [ $# -ge 1 ]; do
         sh|bash)
           ;;
         *)
-          printf "%s\n" "${0##*/}: unsupported shell '$opt_wrapper'" >&2
+          printf "%s\n" "${0##*/}: unsupported shell -- '$opt_wrapper'" >&2
           exit 1
           ;;
       esac
@@ -236,7 +236,7 @@ while [ $# -ge 1 ]; do
       break
       ;;
     -*)
-      printf "%s\n" "${0##*/}: unrecognized option '$1'" >&2
+      printf "%s\n" "${0##*/}: unrecognized option -- '$1'" >&2
       exit 1
       ;;
     *)
