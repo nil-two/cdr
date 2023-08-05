@@ -180,7 +180,7 @@ Variables
 
 ### `CDR_BASE`
 
-The `directory` to set the base directory.
+The directory to set the base directory.
 Default value is none.
 
 ```
@@ -193,7 +193,7 @@ export CDR_BASE=public
 
 ### `CDR_FILTER`
 
-The `command` to use select a directory.
+The command to use select a directory.
 Default value is `percol`.
 
 ```
@@ -219,7 +219,7 @@ export CDR_GIT=false
 
 ### `CDR_SOURCE`
 
-The `command` to list directories.
+The command to list directories.
 Default value is `find -type d`.
 
 ```
