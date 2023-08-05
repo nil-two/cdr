@@ -262,6 +262,7 @@ if [ -n "$arg_directory" ]; then
   printf "%s\n" "$arg_directory"
   exit 0
 fi
+
 if [ "$opt_git" = true ]; then
   opt_base=$(git rev-parse --show-toplevel)
   opt_source='echo .; git ls-tree -rd --name-only --full-tree HEAD'
@@ -272,6 +273,7 @@ fi
 
 directory=$(sh -c "$opt_source" | sh -c "$opt_filter")
 if [ -z "$directory" ]; then
+  printf "%s\n" "$directory"
   exit 1
 fi
 if [ -n "$opt_base" ]; then
@@ -280,6 +282,11 @@ if [ -n "$opt_base" ]; then
     exit 1
   fi
   directory=$opt_base/$directory
+else
+  if [ ! -d "$directory" ]; then
+    printf "%s\n" "$directory"
+    exit 1
+  fi
 fi
 
 printf "%s\n" "$directory"

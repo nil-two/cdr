@@ -37,6 +37,24 @@ check() {
   [[ $(cat "$stdout") == $tmpdir/sub/./CX ]]
 }
 
+@test 'cdr: print result as it is and exit as error if selecting result is empty' {
+  check "$cmd" -f 'false'
+  [[ $(cat "$exitcode") == 1 ]]
+  [[ $(cat "$stdout") == "" ]]
+}
+
+@test 'cdr: print result as it is and exit as error if selected directory does not exist' {
+  check "$cmd" -f 'echo ok'
+  [[ $(cat "$exitcode") == 1 ]]
+  [[ $(cat "$stdout") == "ok" ]]
+}
+
+@test 'cdr: print result as it is and exit as error if selected directory with base does not exist' {
+  check "$cmd" -b "$tmpdir/sub" -f 'echo ok'
+  [[ $(cat "$exitcode") == 1 ]]
+  [[ $(cat "$stdout") == "ok" ]]
+}
+
 @test 'cdr: print error if unknown option passed' {
   check "$cmd" --vim
   [[ $(cat "$exitcode") == 1 ]]
