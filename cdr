@@ -34,7 +34,7 @@ print_wrapper_script() {
 cdr() {
   set -- "$(command cdr "$@")"
   if [ -d "$1" ]; then
-    cd "$1" || return 1
+    cd "$1" || return
   elif [ -n "$1" ]; then
     printf "%s\n" "$1"
   fi
@@ -46,7 +46,7 @@ EOF
 cdr() {
   set -- "$(command cdr "$@")"
   if [ -d "$1" ]; then
-    cd "$1" || return 1
+    cd "$1" || return
   elif [ -n "$1" ]; then
     printf "%s\n" "$1"
   fi
