@@ -268,6 +268,10 @@ if [ "$opt_git" = true ]; then
   opt_source='echo .; git ls-tree -rd --name-only --full-tree HEAD'
 fi
 if [ -n "$opt_base" ]; then
+  if [ ! -d "$opt_base" ]; then
+    printf "%s\n" "${0##*/}: base directory is not a directory -- '$opt_base'" >&2
+    exit 1
+  fi
   cd "$opt_base"
 fi
 

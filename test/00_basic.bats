@@ -85,6 +85,12 @@ check() {
   [[ $(cat "$stdout") == $tmpdir/sub/BX/./BYC ]]
 }
 
+@test 'cdr: print error if --base non-existing-directory passed' {
+  check "$cmd" --base "$tmpdir/none"
+  [[ $(cat "$exitcode") == 1 ]]
+  [[ $(cat "$stderr") =~ ^'cdr: base directory is not a directory' ]]
+}
+
 @test 'cdr: change filter command if -f command passed' {
   check "$cmd" -f 'sed -n 2p'
   [[ $(cat "$exitcode") == 0 ]]
