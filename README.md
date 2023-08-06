@@ -55,7 +55,7 @@ Installation
 
 1. Copy `cdr` into your `$PATH`.
 2. Make `cdr` executable.
-3. Add following config to your shell's rcfile.
+3. Add the following config to your shell's profile.
 
 | Shell |                       |
 |-------|-----------------------|
@@ -78,7 +78,7 @@ Options
 ### -b, --base=\<directory\>
 
 Use the `directory` to the base directory.
-Default value is value of `CDR_BASE` or none.
+The default value is the value of `CDR_BASE` or none.
 This option takes precedence over `CDR_BASE`.
 
 ```
@@ -91,8 +91,8 @@ cdr -bpublic
 
 ### -f, --filter=\<command\>
 
-Use the `command` to select directory.
-Default value is value of `CDR_FILTER (percol)`.
+Use the `command` to select a directory.
+The default value is the value of `CDR_FILTER (percol)`.
 This option takes precedence over `CDR_FILTER`.
 
 ```
@@ -106,7 +106,7 @@ cdr -f'fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
 ### -g, --git
 
 Enable searching from Git managed directories.
-Default value is value of `CDR_GIT (false)`.
+The default value is the value of `CDR_GIT (false)`.
 This option is equivalent to `--base "$(git rev-parse --show-toplevel)" --source 'echo .; git ls-tree -rd --name-only --full-tree HEAD'`.
 This option takes precedence over `CDR_GIT`.
 
@@ -129,7 +129,7 @@ cdr -G
 ### -s, --source=\<command\>
 
 Use the `command` to list directories.
-Default value is value of `CDR_SOURCE (find -type d)`.
+The default value is the value of `CDR_SOURCE (find -type d)`.
 This option takes precedence over `CDR_SOURCE`.
 
 ```
@@ -181,7 +181,7 @@ Variables
 ### `CDR_BASE`
 
 The directory to set the base directory.
-Default value is none.
+The default value is none.
 
 ```
 # Use /etc/nginx to the base directory
@@ -194,7 +194,7 @@ export CDR_BASE=public
 ### `CDR_FILTER`
 
 The command to use select a directory.
-Default value is `percol`.
+The default value is `percol`.
 
 ```
 # Use fzy to select the directory
@@ -207,7 +207,7 @@ export CDR_FILTER='fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}
 ### `CDR_GIT`
 
 Whether to enable searching from Git managed directories.
-Default value is `false`.
+The default value is `false`.
 
 ```
 # Enable searching from Git managed directories.
@@ -220,7 +220,7 @@ export CDR_GIT=false
 ### `CDR_SOURCE`
 
 The command to list directories.
-Default value is `find -type d`.
+The default value is `find -type d`.
 
 ```
 # Use ls to list directories
