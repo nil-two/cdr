@@ -38,13 +38,13 @@ check() {
 }
 
 @test 'cdr wrapper: supports zsh' {
-  check bash -c 'eval "$("$CMD" -w zsh)"; "$(basename "$CMD")"; pwd'
+  check zsh -c 'eval "$("$CMD" -w zsh)"; "$(basename "$CMD")"; pwd'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $(realpath "$tmpdir/sub/CX") ]]
 }
 
 @test 'cdr wrapper: supports yash' {
-  check bash -c 'eval "$("$CMD" -w yash)"; "$(basename "$CMD")"; pwd'
+  check yash -c 'eval "$("$CMD" -w yash)"; "$(basename "$CMD")"; pwd'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $(realpath "$tmpdir/sub/CX") ]]
 }
