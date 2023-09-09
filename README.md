@@ -177,7 +177,7 @@ $ source (cdr -w fish | psub)
 Print usage and exit.
 
 ```
-$ cdr -h
+$ cdr --help
 (Print usage)
 ```
 
