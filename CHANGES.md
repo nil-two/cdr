@@ -1,3 +1,9 @@
+### v1.1.0 - 2023-09-10
+
+- Support Zsh.
+- Support Yash.
+- Support Fish.
+
 ### v1.0.2 - 2023-08-05
 
 - Exit with exitcode of cd when cd failed.
