@@ -23,7 +23,7 @@ $ cdr [<option(s)>] [<directory>]
 chdir with recursive directory searching.
 
 options:
-  -b, --base=<directory>  use the directory to the base directory
+  -b, --base=<directory>  use the directory as the base directory
   -f, --filter=<command>  use the command to select a directory
   -g, --git               enable searching from Git managed directories
   -G, --no-git            disable searching from Git managed directories
@@ -77,15 +77,15 @@ Options
 
 ### -b, --base=\<directory\>
 
-Use the `directory` to the base directory.
+Use the `directory` as the base directory.
 The default value is the value of `CDR_BASE` or none.
 This option takes precedence over `CDR_BASE`.
 
 ```
-# Use /etc/nginx to the base directory
+# Use /etc/nginx as the base directory
 cdr -b/etc/nginx
 
-# Use ./public to the base directory
+# Use ./public as the base directory
 cdr -bpublic
 ```
 
