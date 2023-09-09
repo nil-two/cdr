@@ -27,10 +27,8 @@ environment-variables:
 EOF
 }
 
-print_wrapper_script() {
-  case $1 in
-    sh)
-      cat <<'EOF'
+print_wrapper_script_for_sh() {
+  cat <<'EOF'
 cdr() {
   set -- "$(command cdr "$@")"
   if [ -d "$1" ]; then
@@ -40,17 +38,11 @@ cdr() {
   fi
 }
 EOF
-      ;;
-    bash)
-      cat <<'EOF'
-cdr() {
-  set -- "$(command cdr "$@")"
-  if [ -d "$1" ]; then
-    cd "$1" || return
-  elif [ -n "$1" ]; then
-    printf "%s\n" "$1"
-  fi
 }
+
+print_wrapper_script_for_bash() {
+  print_wrapper_script_for_sh
+  cat <<'EOF'
 
 _cdr() {
   local cur prev words cword split
@@ -103,6 +95,15 @@ _cdr() {
 
 complete -F _cdr cdr
 EOF
+}
+
+print_wrapper_script() {
+  case $1 in
+    sh)
+      print_wrapper_script_for_sh
+      ;;
+    bash)
+      print_wrapper_script_for_bash
       ;;
     *)
       printf "%s\n" "${0##*/}: unsupported shell -- '$1'" >&2
