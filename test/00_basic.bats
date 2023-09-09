@@ -7,10 +7,10 @@ stderr=$BATS_TEST_DIRNAME/../tmp/stderr
 exitcode=$BATS_TEST_DIRNAME/../tmp/exitcode
 
 setup() {
-  export CDR_BASE=$tmpdir/sub
-  export CDR_FILTER='tail -1'
+  export CDR_BASE="$tmpdir/sub"
+  export CDR_FILTER="tail -1"
   unset CDR_GIT
-  export CDR_SOURCE='find -type d | sort'
+  export CDR_SOURCE="find -type d | sort"
   mkdir -p -- "$tmpdir/sub/"{AX,BX,CX} "$tmpdir/sub/BX/"{BYA,BYB,BYC}
 }
 
