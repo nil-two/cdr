@@ -17,7 +17,7 @@ options:
   [<directory>]           chdir to the directory without selecting
 
 supported-shells:
-  sh, bash, zsh, yash
+  sh, bash, zsh, yash, fish
 
 environment-variables:
   CDR_BASE    set default -b/--base (default: .)
@@ -62,6 +62,7 @@ _cdr() {
     bash
     zsh
     yash
+    fish
   )
 
   case $prev in
@@ -110,7 +111,7 @@ _cdr() {
     '(-g --git)'{-g,--git}'[enable searching from Git managed directories]' \
     '(-G --no-git)'{-G,--no-git}'[disable searching from Git managed directories]' \
     '(-s --source)'{-s,--source}'[use the command to list directories]:source command:_command_names' \
-    '(-w --wrapper)'{-w,--wrapper}'[output the wrapper script for the shell and exit]: :_values '"'"'target shell'"'"' sh bash zsh yash' \
+    '(-w --wrapper)'{-w,--wrapper}'[output the wrapper script for the shell and exit]: :_values '"'"'target shell'"'"' sh bash zsh yash fish' \
     '(- *)--help[print usage and exit]' \
     '*:directory:_files -/' \
     && return 0
@@ -151,13 +152,35 @@ function completion/cdr {
     complete -P "$PREFIX" -c
     ;;
   (w|--wrapper)
-    complete -P "$PREFIX" -- sh bash zsh yash
+    complete -P "$PREFIX" -- sh bash zsh yash fish
     ;;
   (*)
     complete -d
     ;;
   esac
 }
+EOF
+}
+
+print_wrapper_script_for_fish() {
+  cat <<'EOF'
+function cdr
+  set -l output (command cdr $argv)
+  if test -d "$output"
+    cd "$output" || return
+  else if test -n "$output"
+    printf "%s\n" $output
+  end
+end
+
+complete -c cdr -s b -l base -xa '(__fish_complete_directories)' -d 'use the directory as the base directory'
+complete -c cdr -s f -l filter -xa '(__fish_complete_command)' -d 'use the command to select a directory'
+complete -c cdr -s g -l git -d 'enable searching from Git managed directories'
+complete -c cdr -s G -l no-git -d 'disable searching from Git managed directories'
+complete -c cdr -s s -l source -xa '(__fish_complete_command)' -d 'use the command to list directories'
+complete -c cdr -s w -l wrapper -xa '(printf "%s\tShell\n" sh bash zsh yash fish)' -d 'output the wrapper script for the shell and exit'
+complete -c cdr -l help -d 'print usage and exit'
+complete -c cdr -xa '(__fish_complete_directories)'
 EOF
 }
 
@@ -174,6 +197,9 @@ print_wrapper_script() {
       ;;
     yash)
       print_wrapper_script_for_yash
+      ;;
+    fish)
+      print_wrapper_script_for_fish
       ;;
     *)
       printf "%s\n" "${0##*/}: unsupported shell -- '$1'" >&2
@@ -291,7 +317,7 @@ while [ $# -ge 1 ]; do
           ;;
       esac
       case $opt_wrapper in
-        sh|bash|zsh|yash)
+        sh|bash|zsh|yash|fish)
           ;;
         *)
           printf "%s\n" "${0##*/}: unsupported shell -- '$opt_wrapper'" >&2

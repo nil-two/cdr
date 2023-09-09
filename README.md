@@ -33,7 +33,7 @@ options:
   [<directory>]           chdir to the directory without selecting
 
 supported-shells:
-  sh, bash, zsh, yash
+  sh, bash, zsh, yash, fish
 
 environment-variables:
   CDR_BASE    set default -b/--base
@@ -57,12 +57,13 @@ Installation
 2. Make `cdr` executable.
 3. Add the following config to your shell's profile.
 
-| Shell |                       |
-|-------|-----------------------|
-| sh    | eval "$(cdr -w sh)"   |
-| bash  | eval "$(cdr -w bash)" |
-| zsh   | eval "$(cdr -w zsh)"  |
-| yash  | eval "$(cdr -w yash)" |
+| Shell |                              |
+|-------|------------------------------|
+| sh    | eval "$(cdr -w sh)"          |
+| bash  | eval "$(cdr -w bash)"        |
+| zsh   | eval "$(cdr -w zsh)"         |
+| yash  | eval "$(cdr -w yash)"        |
+| fish  | source (cdr -w fish \| psub) |
 
 ### Example
 
@@ -152,6 +153,7 @@ Supported shells are as follows:
 - bash
 - zsh
 - yash
+- fish
 
 ```
 $ eval "$(cdr -w sh)"
@@ -165,6 +167,9 @@ $ eval "$(cdr -w zsh)"
 
 $ eval "$(cdr -w yash)"
 (Enable the shell integration for Yash)
+
+$ source (cdr -w fish | psub)
+(Enable the shell integration for Fish)
 ```
 
 ### --help

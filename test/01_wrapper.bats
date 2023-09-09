@@ -49,4 +49,10 @@ check() {
   [[ $(cat "$stdout") == $(realpath "$tmpdir/sub/CX") ]]
 }
 
+@test 'cdr wrapper: supports fish' {
+  check fish -c 'source ($CMD -w fish | psub); cdr; pwd'
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == $(realpath "$tmpdir/sub/CX") ]]
+}
+
 # vim: ft=bash
