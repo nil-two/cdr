@@ -17,7 +17,7 @@ options:
   [<directory>]           chdir to the directory without selecting
 
 supported-shells:
-  sh, bash, zsh
+  sh, bash, zsh, yash
 
 environment-variables:
   CDR_BASE    set default -b/--base (default: .)
@@ -61,6 +61,7 @@ _cdr() {
     sh
     bash
     zsh
+    yash
   )
 
   case $prev in
@@ -109,13 +110,54 @@ _cdr() {
     '(-g --git)'{-g,--git}'[enable searching from Git managed directories]' \
     '(-G --no-git)'{-G,--no-git}'[disable searching from Git managed directories]' \
     '(-s --source)'{-s,--source}'[use the command to list directories]:source command:_command_names' \
-    '(-w --wrapper)'{-w,--wrapper}'[output the wrapper script for the shell and exit]: :_values '"'"'target shell'"'"' sh bash zsh' \
+    '(-w --wrapper)'{-w,--wrapper}'[output the wrapper script for the shell and exit]: :_values '"'"'target shell'"'"' sh bash zsh yash' \
     '(- *)--help[print usage and exit]' \
     '*:directory:_files -/' \
     && return 0
 }
 
 compdef _cdr cdr
+EOF
+}
+
+print_wrapper_script_for_yash() {
+  print_wrapper_script_for_sh
+  cat <<'EOF'
+
+function completion/cdr {
+  typeset OPTIONS ARGOPT PREFIX
+  OPTIONS=(
+  'b: --base:; use the directory as the base directory'
+  'f: --filter:; use the command to select a directory'
+  'g --git; enable searching from Git managed directories'
+  'G --no-git; disable searching from Git managed directories'
+  's: --source:; use the command to list directories'
+  'w: --wrapper:; output the wrapper script for the shell and exit'
+  '--help; print usage and exit'
+  )
+
+  command -f completion//parseoptions
+  case $ARGOPT in
+  (-)
+    command -f completion//completeoptions
+    ;;
+  (b|--base)
+    complete -P "$PREFIX" -d
+    ;;
+  (f|--filter)
+    complete -P "$PREFIX" -c
+    ;;
+  (s|--source)
+    complete -P "$PREFIX" -c
+    ;;
+  (w|--wrapper)
+    complete -P "$PREFIX" -- sh bash zsh yash
+    ;;
+  (*)
+    complete -d
+    ;;
+  esac
+}
 EOF
 }
 
@@ -129,6 +171,9 @@ print_wrapper_script() {
       ;;
     zsh)
       print_wrapper_script_for_zsh
+      ;;
+    yash)
+      print_wrapper_script_for_yash
       ;;
     *)
       printf "%s\n" "${0##*/}: unsupported shell -- '$1'" >&2
@@ -246,7 +291,7 @@ while [ $# -ge 1 ]; do
           ;;
       esac
       case $opt_wrapper in
-        sh|bash|zsh)
+        sh|bash|zsh|yash)
           ;;
         *)
           printf "%s\n" "${0##*/}: unsupported shell -- '$opt_wrapper'" >&2
