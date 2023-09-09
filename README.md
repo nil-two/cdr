@@ -33,7 +33,7 @@ options:
   [<directory>]           chdir to the directory without selecting
 
 supported-shells:
-  sh, bash
+  sh, bash, zsh
 
 environment-variables:
   CDR_BASE    set default -b/--base
@@ -61,6 +61,7 @@ Installation
 |-------|-----------------------|
 | sh    | eval "$(cdr -w sh)"   |
 | bash  | eval "$(cdr -w bash)" |
+| zsh   | eval "$(cdr -w zsh)"  |
 
 ### Example
 
@@ -148,6 +149,7 @@ Supported shells are as follows:
 
 - sh
 - bash
+- zsh
 
 ```
 $ eval "$(cdr -w sh)"
@@ -155,6 +157,9 @@ $ eval "$(cdr -w sh)"
 
 $ eval "$(cdr -w bash)"
 (Enable the shell integration for Bash)
+
+$ eval "$(cdr -w zsh)"
+(Enable the shell integration for Zsh)
 ```
 
 ### --help

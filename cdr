@@ -17,7 +17,7 @@ options:
   [<directory>]           chdir to the directory without selecting
 
 supported-shells:
-  sh, bash
+  sh, bash, zsh
 
 environment-variables:
   CDR_BASE    set default -b/--base (default: .)
@@ -60,6 +60,7 @@ _cdr() {
   local wrapper_target_shells=(
     sh
     bash
+    zsh
   )
 
   case $prev in
@@ -97,6 +98,27 @@ complete -F _cdr cdr
 EOF
 }
 
+print_wrapper_script_for_zsh() {
+  print_wrapper_script_for_sh
+  cat <<'EOF'
+
+_cdr() {
+  _arguments \
+    '(-b --base)'{-b,--base}'[use the directory as the base directory]:base directory:_files -/' \
+    '(-f --filter)'{-f,--filter}'[use the command to select a directory]:filter command:_command_names' \
+    '(-g --git)'{-g,--git}'[enable searching from Git managed directories]' \
+    '(-G --no-git)'{-G,--no-git}'[disable searching from Git managed directories]' \
+    '(-s --source)'{-s,--source}'[use the command to list directories]:source command:_command_names' \
+    '(-w --wrapper)'{-w,--wrapper}'[output the wrapper script for the shell and exit]: :_values '"'"'target shell'"'"' sh bash zsh' \
+    '(- *)--help[print usage and exit]' \
+    '*:directory:_files -/' \
+    && return 0
+}
+
+compdef _cdr cdr
+EOF
+}
+
 print_wrapper_script() {
   case $1 in
     sh)
@@ -104,6 +126,9 @@ print_wrapper_script() {
       ;;
     bash)
       print_wrapper_script_for_bash
+      ;;
+    zsh)
+      print_wrapper_script_for_zsh
       ;;
     *)
       printf "%s\n" "${0##*/}: unsupported shell -- '$1'" >&2
@@ -221,7 +246,7 @@ while [ $# -ge 1 ]; do
           ;;
       esac
       case $opt_wrapper in
-        sh|bash)
+        sh|bash|zsh)
           ;;
         *)
           printf "%s\n" "${0##*/}: unsupported shell -- '$opt_wrapper'" >&2
