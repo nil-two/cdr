@@ -142,7 +142,7 @@ check() {
 }
 
 @test 'cdr: disable searching from Git managed directories if -G passed' {
-  CDR_GIT=true
+  export CDR_GIT=true
   cd "$tmpdir/sub"
   git init > /dev/null 2>&1 || true
   git config user.name "test"
@@ -156,7 +156,7 @@ check() {
 }
 
 @test 'cdr: disable searching from Git managed directories if --no-git passed' {
-  CDR_GIT=true
+  export CDR_GIT=true
   cd "$tmpdir/sub"
   git init > /dev/null 2>&1 || true
   git config user.name "test"
@@ -243,7 +243,7 @@ check() {
 }
 
 @test 'cdr: change filter command if CDR_FILTER set' {
-  CDR_FILTER='sed -n 2p'
+  export CDR_FILTER='sed -n 2p'
   check "$cmd"
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $tmpdir/sub/./AX ]]
@@ -264,7 +264,7 @@ check() {
 }
 
 @test 'cdr: disable searching from Git managed directories if CDR_GIT set to not true' {
-  CDR_GIT=false
+  export CDR_GIT=false
   cd "$tmpdir/sub"
   git init > /dev/null 2>&1 || true
   git config user.name "test"
@@ -278,7 +278,7 @@ check() {
 }
 
 @test 'cdr: change source command if CDR_SOURCE set' {
-  CDR_SOURCE='ls'
+  export CDR_SOURCE='ls'
   check "$cmd"
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $tmpdir/sub/CX ]]
