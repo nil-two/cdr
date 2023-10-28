@@ -80,7 +80,8 @@ Options
 
 ### -b, --base=\<directory\>
 
-Use the `directory` as the base directory.
+Use the `directory` as the base directory,
+and add a candidate of the base directory.
 The default value is the value of `CDR_BASE` or none.
 This option takes precedence over `CDR_BASE`.
 

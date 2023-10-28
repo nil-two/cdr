@@ -85,6 +85,12 @@ check() {
   [[ $(cat "$stdout") == $tmpdir/sub/BX/./BYC ]]
 }
 
+@test 'cdr: add a candidate of the base directory if --base passed' {
+  check "$cmd" -f 'head -1'
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == $tmpdir/sub/. ]]
+}
+
 @test 'cdr: print error if --base non-existing-directory passed' {
   check "$cmd" --base "$tmpdir/none"
   [[ $(cat "$exitcode") == 1 ]]
@@ -92,25 +98,25 @@ check() {
 }
 
 @test 'cdr: change filter command if -f command passed' {
-  check "$cmd" -f 'sed -n 2p'
+  check "$cmd" -f 'sed -n 3p'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $tmpdir/sub/./AX ]]
 }
 
 @test 'cdr: change filter command if -fcommand passed' {
-  check "$cmd" -f'sed -n 2p'
+  check "$cmd" -f'sed -n 3p'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $tmpdir/sub/./AX ]]
 }
 
 @test 'cdr: change filter command if --filter command passed' {
-  check "$cmd" --filter 'sed -n 2p'
+  check "$cmd" --filter 'sed -n 3p'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $tmpdir/sub/./AX ]]
 }
 
 @test 'cdr: change filter command if --filter=command passed' {
-  check "$cmd" --filter='sed -n 2p'
+  check "$cmd" --filter='sed -n 3p'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $tmpdir/sub/./AX ]]
 }
@@ -243,7 +249,7 @@ check() {
 }
 
 @test 'cdr: change filter command if CDR_FILTER set' {
-  export CDR_FILTER='sed -n 2p'
+  export CDR_FILTER='sed -n 3p'
   check "$cmd"
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $tmpdir/sub/./AX ]]
