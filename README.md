@@ -19,7 +19,7 @@ Usage
 -----
 
 ```
-$ cdr [<option(s)>] [<directory>]
+usage: cdr [<option(s)>] [<directory>]
 chdir with recursive directory searching.
 
 options:
@@ -86,11 +86,11 @@ The default value is the value of `CDR_BASE` or none.
 This option takes precedence over `CDR_BASE`.
 
 ```
-# Use /etc/nginx as the base directory
-cdr -b/etc/nginx
+$ cdr -b/etc/nginx
+(Use /etc/nginx as the base directory)
 
-# Use ./public as the base directory
-cdr -bpublic
+$ cdr -bpublic
+(Use ./public as the base directory)
 ```
 
 ### -f, --filter=\<command\>
@@ -100,11 +100,11 @@ The default value is the value of `CDR_FILTER (percol)`.
 This option takes precedence over `CDR_FILTER`.
 
 ```
-# Use fzy to select the directory
-cdr -ffzy
+$ cdr -ffzy
+(Use fzy to select the directory)
 
-# Use fzf with preview to select the directory
-cdr -f'fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
+$ cdr -f'fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
+(Use fzf with preview to select the directory)
 ```
 
 ### -g, --git
@@ -115,8 +115,8 @@ This option is equivalent to `--base "$(git rev-parse --show-toplevel)" --source
 This option takes precedence over `CDR_GIT`.
 
 ```
-# Select a directory from Git managed directories
-cdr -g
+$ cdr -g
+(Select a directory from Git managed directories)
 ```
 
 ### -G, --no-git
@@ -126,8 +126,8 @@ Disable searching from Git managed directories.
 This option takes precedence over `CDR_GIT`.
 
 ```
-# Select a directory from directories under the current directory
-cdr -G
+$ cdr -G
+(Select a directory from directories under the current directory)
 ```
 
 ### -s, --source=\<command\>
@@ -137,11 +137,11 @@ The default value is the value of `CDR_SOURCE (find -type d)`.
 This option takes precedence over `CDR_SOURCE`.
 
 ```
-# Use ls to list directories
-cdr -sls
+$ cdr -sls
+(Use ls to list directories)
 
-# Use combined command to list directories
-cdr -s'echo /etc/nginx; echo /var/log/nginx'
+$ cdr -s'echo /etc/nginx; echo /var/log/nginx'
+(Use combined command to list directories)
 ```
 
 ### -w, --wrapper=\<shell\>
@@ -200,11 +200,11 @@ The directory to set the base directory.
 The default value is none.
 
 ```
-# Use /etc/nginx to the base directory
-export CDR_BASE=/etc/nginx
+$ export CDR_BASE=/etc/nginx
+(Use /etc/nginx to the base directory)
 
-# Use ./public to the base directory
-export CDR_BASE=public
+$ export CDR_BASE=public
+(Use ./public to the base directory)
 ```
 
 ### `CDR_FILTER`
@@ -213,11 +213,11 @@ The command to use select a directory.
 The default value is `percol`.
 
 ```
-# Use fzy to select the directory
-export CDR_FILTER=fzy
+$ export CDR_FILTER=fzy
+(Use fzy to select the directory)
 
-# Use fzf with preview to select the directory
-export CDR_FILTER='fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
+$ export CDR_FILTER='fzf --layout=reverse --preview='"'"'printf "# %s\n" {}; ls {}'"'"''
+(Use fzf with preview to select the directory)
 ```
 
 ### `CDR_GIT`
@@ -226,11 +226,11 @@ Whether to enable searching from Git managed directories.
 The default value is `false`.
 
 ```
-# Enable searching from Git managed directories.
-export CDR_GIT=true
+$ export CDR_GIT=true
+(Enable searching from Git managed directories.)
 
-# Disable searching from Git managed directories.
-export CDR_GIT=false
+$ export CDR_GIT=false
+(Disable searching from Git managed directories.)
 ```
 
 ### `CDR_SOURCE`
@@ -239,11 +239,11 @@ The command to list directories.
 The default value is `find -type d`.
 
 ```
-# Use ls to list directories
-export CDR_SOURCE='ls'
+$ export CDR_SOURCE='ls'
+(Use ls to list directories)
 
-# Use combined command to list directories
-export CDR_SOURCE='echo /etc/nginx; echo /var/log/nginx'
+$ export CDR_SOURCE='echo /etc/nginx; echo /var/log/nginx'
+(Use combined command to list directories)
 ```
 
 License
